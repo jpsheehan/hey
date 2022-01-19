@@ -25,24 +25,31 @@ async function main() {
 }
 
 async function getImageData(unsplash) {
-    let response = await unsplash.collections.getPhotos({ collectionId: UNSPLASH_COLLECTION_ID });
-    if (response.type !== 'success') {
-        console.error("Response:", response);
-        throw new Error("An error occurred making a request to unsplash.");
-    }
+    const photos = [];
+    let page = 1;
 
-    const photos = response.response.results;
+    while (true) {
+        const response = await unsplash.collections.getPhotos({ collectionId: UNSPLASH_COLLECTION_ID, page });
+        if (response.type !== 'success') {
+            console.error("Response:", response);
+            throw new Error("An error occurred making a request to unsplash.");
+        }
 
-    console.log(`Found ${photos.length} photos in collection.`);
-    
-    return photos
-        .map((photo) => ({
+        photos.push(...response.response.results.map((photo) => ({
             id: photo.id,
             description: photo.description,
             image_url: photo.urls.full,
             user_name: photo.user.name ?? photo.user.username,
             user_link: photo.user.links.html,
-        }));
+        })));
+
+        if (response.response.total === photos.length) {
+            break;
+        }
+        page++;
+    }
+    console.log(`Found ${photos.length} photos in collection.`);
+    return photos;
 }
 
 function requireVariable(x) {
