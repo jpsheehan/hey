@@ -1,0 +1,15 @@
+{
+  "name": "hey",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "node index.js"
+  },
+  "devDependencies": {
+    "dotenv": "^14.2.0",
+    "node-fetch": "2",
+    "unsplash-js": "^7.0.15"
+  },
+  "dependencies": {}
+}
